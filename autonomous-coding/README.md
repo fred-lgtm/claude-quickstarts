@@ -27,6 +27,25 @@ export ANTHROPIC_API_KEY='your-api-key-here'
 
 ## Quick Start
 
+### Using the /orchestrator Slash Command (Recommended)
+
+If you're using Claude Code CLI, you can use the built-in `/orchestrator` slash command for easy project management:
+
+```bash
+# Start a new project
+/orchestrator start ./my_project
+
+# Check project status
+/orchestrator status ./my_project
+
+# For testing with limited iterations
+/orchestrator start ./my_project --max-iterations 3
+```
+
+See [Slash Command Reference](#slash-command-reference) below for all available commands.
+
+### Using Python Directly
+
 ```bash
 python autonomous_agent_demo.py --project-dir ./my_project
 ```
@@ -132,6 +151,83 @@ The application will typically be available at `http://localhost:3000` or simila
 | `--project-dir` | Directory for the project | `./autonomous_demo_project` |
 | `--max-iterations` | Max agent iterations | Unlimited |
 | `--model` | Claude model to use | `claude-sonnet-4-5-20250929` |
+
+## Slash Command Reference
+
+The `/orchestrator` slash command provides a convenient interface for managing autonomous coding projects when using Claude Code CLI.
+
+### Available Commands
+
+#### `/orchestrator start`
+Start a new autonomous coding session or resume an existing one.
+
+```bash
+/orchestrator start [project-dir] [--model MODEL] [--max-iterations N]
+```
+
+**Examples:**
+```bash
+/orchestrator start ./my_project
+/orchestrator start ./my_project --model claude-sonnet-4-5-20250929
+/orchestrator start ./my_project --max-iterations 5
+```
+
+#### `/orchestrator status`
+Check the current status and progress of a project.
+
+```bash
+/orchestrator status [project-dir]
+```
+
+Shows:
+- Number of passing vs. failing tests
+- Recent progress notes
+- Recent git commits
+
+#### `/orchestrator setup`
+Initialize a new project structure.
+
+```bash
+/orchestrator setup [project-dir]
+```
+
+Creates the project directory and copies the app specification template.
+
+#### `/orchestrator run-init`
+Run the initialization script (init.sh) to start the generated application.
+
+```bash
+/orchestrator run-init [project-dir]
+```
+
+#### `/orchestrator verify`
+Verify the project by running a sample of passing tests.
+
+```bash
+/orchestrator verify [project-dir]
+```
+
+### Slash Command Usage Examples
+
+**Create and start a new project:**
+```bash
+/orchestrator setup ./my_chat_app
+# Edit ./my_chat_app/app_spec.txt with your requirements
+/orchestrator start ./my_chat_app
+```
+
+**Check progress and resume:**
+```bash
+/orchestrator status ./my_chat_app
+/orchestrator start ./my_chat_app
+```
+
+**Run the generated application:**
+```bash
+/orchestrator run-init ./my_chat_app
+```
+
+For complete documentation, see `.claude/commands/orchestrator.md`.
 
 ## Customization
 
