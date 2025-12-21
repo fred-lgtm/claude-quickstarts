@@ -29,17 +29,27 @@ export ANTHROPIC_API_KEY='your-api-key-here'
 
 ### Using the /orchestrator Slash Command (Recommended)
 
-If you're using Claude Code CLI, you can use the built-in `/orchestrator` slash command for easy project management:
+If you're using Claude Code CLI, you can use the `/orchestrator` slash command for easy project management. The orchestrator now supports all Claude quickstart agents:
 
 ```bash
-# Start a new project
-/orchestrator start ./my_project
+# Autonomous Coding Agent - Start a new project
+/orchestrator autonomous-coding start ./my_project
 
-# Check project status
-/orchestrator status ./my_project
+# Autonomous Coding Agent - Check project status
+/orchestrator autonomous-coding status ./my_project
 
-# For testing with limited iterations
-/orchestrator start ./my_project --max-iterations 3
+# Autonomous Coding Agent - For testing with limited iterations
+/orchestrator autonomous-coding start ./my_project --max-iterations 3
+
+# Customer Support Agent - Quick setup
+/orchestrator customer-support setup-env
+/orchestrator customer-support install
+/orchestrator customer-support dev
+
+# Financial Data Analyst - Quick setup
+/orchestrator financial-analyst setup-env
+/orchestrator financial-analyst install
+/orchestrator financial-analyst dev
 ```
 
 See [Slash Command Reference](#slash-command-reference) below for all available commands.
@@ -154,29 +164,40 @@ The application will typically be available at `http://localhost:3000` or simila
 
 ## Slash Command Reference
 
-The `/orchestrator` slash command provides a convenient interface for managing autonomous coding projects when using Claude Code CLI.
+The `/orchestrator` slash command provides a unified interface for managing all Claude quickstart agents when using Claude Code CLI.
 
-### Available Commands
+### Command Structure
 
-#### `/orchestrator start`
+```bash
+/orchestrator [agent-type] [action] [options]
+```
+
+**Agent Types:**
+- `autonomous-coding` - Long-running autonomous coding agent
+- `customer-support` - Customer support chat interface
+- `financial-analyst` - Financial data analysis tool
+
+### Autonomous Coding Commands
+
+#### `/orchestrator autonomous-coding start`
 Start a new autonomous coding session or resume an existing one.
 
 ```bash
-/orchestrator start [project-dir] [--model MODEL] [--max-iterations N]
+/orchestrator autonomous-coding start [project-dir] [--model MODEL] [--max-iterations N]
 ```
 
 **Examples:**
 ```bash
-/orchestrator start ./my_project
-/orchestrator start ./my_project --model claude-sonnet-4-5-20250929
-/orchestrator start ./my_project --max-iterations 5
+/orchestrator autonomous-coding start ./my_project
+/orchestrator autonomous-coding start ./my_project --model claude-sonnet-4-5-20250929
+/orchestrator autonomous-coding start ./my_project --max-iterations 5
 ```
 
-#### `/orchestrator status`
+#### `/orchestrator autonomous-coding status`
 Check the current status and progress of a project.
 
 ```bash
-/orchestrator status [project-dir]
+/orchestrator autonomous-coding status [project-dir]
 ```
 
 Shows:
@@ -184,47 +205,116 @@ Shows:
 - Recent progress notes
 - Recent git commits
 
-#### `/orchestrator setup`
+#### `/orchestrator autonomous-coding setup`
 Initialize a new project structure.
 
 ```bash
-/orchestrator setup [project-dir]
+/orchestrator autonomous-coding setup [project-dir]
 ```
 
 Creates the project directory and copies the app specification template.
 
-#### `/orchestrator run-init`
+#### `/orchestrator autonomous-coding run-init`
 Run the initialization script (init.sh) to start the generated application.
 
 ```bash
-/orchestrator run-init [project-dir]
+/orchestrator autonomous-coding run-init [project-dir]
 ```
 
-#### `/orchestrator verify`
+#### `/orchestrator autonomous-coding verify`
 Verify the project by running a sample of passing tests.
 
 ```bash
-/orchestrator verify [project-dir]
+/orchestrator autonomous-coding verify [project-dir]
 ```
 
-### Slash Command Usage Examples
+### Customer Support Agent Commands
 
-**Create and start a new project:**
+#### `/orchestrator customer-support dev`
+Start the customer support agent in development mode.
+
 ```bash
-/orchestrator setup ./my_chat_app
+/orchestrator customer-support dev [--port PORT]
+```
+
+#### `/orchestrator customer-support setup-env`
+Guide through setting up environment variables (.env.local).
+
+```bash
+/orchestrator customer-support setup-env
+```
+
+#### `/orchestrator customer-support install`
+Install dependencies for the customer support agent.
+
+```bash
+/orchestrator customer-support install
+```
+
+#### `/orchestrator customer-support build`
+Build the customer support agent for production.
+
+```bash
+/orchestrator customer-support build
+```
+
+### Financial Data Analyst Commands
+
+#### `/orchestrator financial-analyst dev`
+Start the financial data analyst in development mode.
+
+```bash
+/orchestrator financial-analyst dev [--port PORT]
+```
+
+#### `/orchestrator financial-analyst setup-env`
+Guide through setting up environment variables (.env.local).
+
+```bash
+/orchestrator financial-analyst setup-env
+```
+
+#### `/orchestrator financial-analyst install`
+Install dependencies for the financial data analyst.
+
+```bash
+/orchestrator financial-analyst install
+```
+
+#### `/orchestrator financial-analyst build`
+Build the financial data analyst for production.
+
+```bash
+/orchestrator financial-analyst build
+```
+
+### Usage Examples
+
+**Autonomous Coding - Create and start a new project:**
+```bash
+/orchestrator autonomous-coding setup ./my_chat_app
 # Edit ./my_chat_app/app_spec.txt with your requirements
-/orchestrator start ./my_chat_app
+/orchestrator autonomous-coding start ./my_chat_app
 ```
 
-**Check progress and resume:**
+**Autonomous Coding - Check progress and resume:**
 ```bash
-/orchestrator status ./my_chat_app
-/orchestrator start ./my_chat_app
+/orchestrator autonomous-coding status ./my_chat_app
+/orchestrator autonomous-coding start ./my_chat_app
 ```
 
-**Run the generated application:**
+**Customer Support - Quick start:**
 ```bash
-/orchestrator run-init ./my_chat_app
+/orchestrator customer-support setup-env
+/orchestrator customer-support install
+/orchestrator customer-support dev
+```
+
+**Financial Analyst - Quick start:**
+```bash
+/orchestrator financial-analyst setup-env
+/orchestrator financial-analyst install
+/orchestrator financial-analyst dev
 ```
 
 For complete documentation, see `.claude/commands/orchestrator.md`.
