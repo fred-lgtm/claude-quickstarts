@@ -1,0 +1,13 @@
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+credentials.json
+service-account*.json
+.env.mcp
+.DS_Store
+node_modules/
+__pycache__/
+*.pyc
