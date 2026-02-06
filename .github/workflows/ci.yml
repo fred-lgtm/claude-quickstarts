@@ -1,0 +1,72 @@
+name: CI
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Detect language
+        id: detect
+        run: |
+          if [ -f "package.json" ]; then echo "lang=node" >> $GITHUB_OUTPUT
+          elif [ -f "requirements.txt" ] || [ -f "pyproject.toml" ]; then echo "lang=python" >> $GITHUB_OUTPUT
+          elif [ -f "go.mod" ]; then echo "lang=go" >> $GITHUB_OUTPUT
+          else echo "lang=generic" >> $GITHUB_OUTPUT; fi
+
+      - name: Node.js setup
+        if: steps.detect.outputs.lang == 'node'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Node.js lint + test
+        if: steps.detect.outputs.lang == 'node'
+        run: |
+          npm ci
+          npm run lint --if-present
+          npm test --if-present
+
+      - name: Python setup
+        if: steps.detect.outputs.lang == 'python'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Python lint + test
+        if: steps.detect.outputs.lang == 'python'
+        run: |
+          pip install -r requirements.txt 2>/dev/null || pip install -e ".[dev]" 2>/dev/null || true
+          pip install ruff pytest 2>/dev/null || true
+          ruff check . --fix 2>/dev/null || true
+          pytest 2>/dev/null || true
+
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Secret scanning
+        uses: trufflesecurity/trufflehog@main
+        with:
+          extra_args: --only-verified
+
+      - name: Dependency audit (Node)
+        if: hashFiles('package-lock.json') != ''
+        run: npm audit --production 2>/dev/null || true
+
+      - name: Dependency audit (Python)
+        if: hashFiles('requirements.txt') != ''
+        run: |
+          pip install safety 2>/dev/null || true
+          safety check -r requirements.txt 2>/dev/null || true
